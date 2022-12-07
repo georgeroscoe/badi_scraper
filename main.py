@@ -72,7 +72,7 @@ def send_notification(element):
     logging.info("Notification sent")
 
 
-previous_output = None
+previous_output = []
 
 while True:
     current_output = scrape_badi()
