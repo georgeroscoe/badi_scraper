@@ -42,8 +42,9 @@ def scrape_badi():
     for element in room_list:
         if regex_pattern.search(element.get_attribute("id")):
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
-            logging.info(room_link)
-            matching_elements.append(room_link)
+            room_link_cleaned = re.sub(r'\?.*', '', room_link)
+            logging.info(room_link_cleaned)
+            matching_elements.append(room_link_cleaned)
     driver.close()
     logging.info("Scraped Badi")
     return matching_elements
@@ -65,12 +66,16 @@ def check_new_elements(prev_output, curr_output):
     if new_element_count == 0:
         time = datetime.now().strftime("%H:%M:%S")
         logging.info(f"No new flats found at {time}")
+    else:
+        logging.info("Notification sent")
+        logging.info(curr_count)
+        logging.info(prev_count)
 
 
 def send_notification(element):
     time = datetime.now().strftime("%H:%M:%S")
-    pb.push_link(f"New flat found at {time}", element)
-    logging.info("Notification sent")
+    # pb.push_link(f"New flat found at {time}", element)
+
 
 
 previous_output = []
