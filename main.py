@@ -23,7 +23,7 @@ options.add_experimental_option('excludeSwitches', ['enable-logging'])
 data_file = open('data.json')
 data = json.load(data_file)
 access_token = data['token']
-badi_link = data['link']
+badi_link = data['badi_link']
 pb = Pushbullet(access_token)
 logging.basicConfig(level=logging.INFO)
 
@@ -58,7 +58,7 @@ def check_new_elements(prev_output, curr_output):
     # Compare the counts of the elements in the previous and current outputs
     # If there are any elements in the current output that were not present in the previous output, send an email notification
     for element in curr_count:
-        if element not in prev_count or curr_count[element] > prev_count[element]:
+        if element not in prev_count:
             send_notification(element)
             new_element_count += 1
     if new_element_count == 0:
@@ -76,6 +76,7 @@ previous_output = None
 
 while True:
     current_output = scrape_badi()
+    logging.info(f"{len(previous_output)} old elements, {len(current_output)} new elements")
     check_new_elements(previous_output, current_output)
     previous_output = current_output
     time.sleep(60)
