@@ -42,6 +42,7 @@ def scrape_badi():
     for element in room_list:
         if regex_pattern.search(element.get_attribute("id")):
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
+            logging.info(room_link)
             matching_elements.append(room_link)
     driver.close()
     logging.info("Scraped Badi")
