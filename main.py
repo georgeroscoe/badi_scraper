@@ -14,12 +14,12 @@ from datetime import datetime
 import json
 
 options = webdriver.ChromeOptions()
-options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
+# options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 options.add_argument("disable-dev-shm-usage")
-
-options.add_argument('--no-sandbox')
+# options.add_argument('--headless')
+# options.add_argument('--disable-gpu')
+#
+# options.add_argument('--no-sandbox')
 
 data_file = open('data.json')
 data = json.load(data_file)
@@ -31,7 +31,9 @@ badi_list = []
 
 
 def scrape_badi():
-    driver = webdriver.Chrome(service=Service(os.environ.get("CHROMEDRIVER_PATH")), options=options)
+    # driver = webdriver.Chrome(service=Service(os.environ.get("CHROMEDRIVER_PATH")), options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
     wait = WebDriverWait(driver, 10)
     driver.get(badi_link)
     badi_page = driver.current_url
