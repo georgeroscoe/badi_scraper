@@ -1,8 +1,6 @@
-import os
 import re
 import logging
 import time
-from collections import Counter
 from pushbullet import Pushbullet
 
 from selenium import webdriver
@@ -14,12 +12,8 @@ from datetime import datetime
 import json
 
 options = webdriver.ChromeOptions()
-# options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 options.add_argument("disable-dev-shm-usage")
-# options.add_argument('--headless')
-# options.add_argument('--disable-gpu')
-#
-# options.add_argument('--no-sandbox')
+
 
 data_file = open('data.json')
 data = json.load(data_file)
@@ -41,6 +35,7 @@ def scrape_badi():
     room_list = driver.find_elements("xpath", "//div[@id]")
     regex_pattern = re.compile(r"^list-room-card-*")
     for element in room_list:
+        logging.info(element.get_attribute("id"))
         if regex_pattern.search(element.get_attribute("id")):
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
             room_link_cleaned = re.sub(r'\?.*', '', room_link)
