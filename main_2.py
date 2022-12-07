@@ -94,4 +94,4 @@ while True:
     scrape_badi()
     # current_output = scrape_idealista()
 
-    time.sleep(60)
+    time.sleep(10)
