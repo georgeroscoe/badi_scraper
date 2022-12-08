@@ -78,4 +78,4 @@ def check_and_add(item, database):
 
 while True:
     scrape_badi()
-    time.sleep(10)
+    time.sleep(60)
