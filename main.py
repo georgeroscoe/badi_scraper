@@ -32,14 +32,11 @@ def scrape_badi():
     driver.get(badi_link)
     badi_page = driver.current_url
 
-    room_list = driver.find_elements("xpath", '//div[starts-with(@id,"list-room-card")]')
-    # regex_pattern = re.compile(r"^list-room-card-*")
-    logging.info(room_list)
+    room_list = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
     for element in room_list:
-        # if regex_pattern.search(element.get_attribute("id")):
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
-            logging.info(room_link)
             room_link_cleaned = re.sub(r'\?.*', '', room_link)
+            logging.info(room_link)
             check_and_add(room_link_cleaned, badi_list)
     driver.close()
     logging.info("Checked Badi")
@@ -49,7 +46,7 @@ def check_and_add(item, database):
     if item not in database:
         database.append(item)
         time = datetime.now().strftime("%H:%M:%S")
-        pb.push_link(f"New flat found at {time}", item)
+        # pb.push_link(f"New flat found at {time}", item)
         logging.info(f'New flat found at {time}: {item}')
 
 

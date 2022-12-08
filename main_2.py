@@ -51,13 +51,16 @@ def scrape_badi():
     driver.get(badi_link)
     badi_page = driver.current_url
 
-    room_list = driver.find_elements("xpath", "//div[@id]")
-    regex_pattern = re.compile(r"^list-room-card-*")
+    room_list = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
+    # regex_pattern = re.compile(r"^list-room-card-*")
     for element in room_list:
-        if regex_pattern.search(element.get_attribute("id")):
+
+        # if regex_pattern.search(element.get_attribute("id")):
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
             room_link_cleaned = re.sub(r'\?.*', '', room_link)
+            logging.info(room_link_cleaned)
             check_and_add(room_link_cleaned, badi_list)
+
     driver.close()
     logging.info("Checked Badi")
 
