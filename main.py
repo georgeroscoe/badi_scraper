@@ -72,10 +72,10 @@ counter = 0
 
 while True:
     scrape_badi()
-    counter += 1
-    try:
-        if counter % 5 == 0:
-            scrape_idealista()
-    except:
-        pass
+    # counter += 1
+    # try:
+    #     if counter % 5 == 0:
+    #         scrape_idealista()
+    # except:
+    #     pass
     time.sleep(60)
