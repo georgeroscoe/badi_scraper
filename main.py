@@ -23,6 +23,7 @@ pb = Pushbullet(access_token)
 logging.basicConfig(level=logging.INFO)
 combined_list = []
 
+
 def scrape_idealista():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     wait = WebDriverWait(driver, 6)
@@ -39,6 +40,8 @@ def scrape_idealista():
         check_and_add(room_link_cleaned, combined_list)
     driver.close()
     logging.info("Scraped Idealista")
+
+
 def scrape_badi():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
@@ -49,12 +52,13 @@ def scrape_badi():
 
     room_list = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
     for element in room_list:
-            room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
-            room_link_cleaned = re.sub(r'\?.*', '', room_link)
-            logging.info(room_link_cleaned)
-            check_and_add(room_link_cleaned, combined_list)
+        room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
+        room_link_cleaned = re.sub(r'\?.*', '', room_link)
+        logging.info(room_link_cleaned)
+        check_and_add(room_link_cleaned, combined_list)
     driver.close()
     logging.info("Checked Badi")
+
 
 def check_and_add(item, database):
     if item not in database:
@@ -63,10 +67,15 @@ def check_and_add(item, database):
         pb.push_link(f"New flat found at {time}", item)
         logging.info(f'New flat found at {time}: {item}')
 
+
+counter = 0
+
 while True:
     scrape_badi()
+    counter += 1
     try:
-        scrape_idealista()
+        if counter % 5 == 1:
+            scrape_idealista()
     except:
         pass
     time.sleep(60)
