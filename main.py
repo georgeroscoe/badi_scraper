@@ -21,7 +21,7 @@ badi_link = data['badi_link']
 idealista_link = data['idealista_link']
 pb = Pushbullet(access_token)
 logging.basicConfig(level=logging.INFO)
-room_list = []
+combined_list = []
 
 def scrape_idealista():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -36,7 +36,7 @@ def scrape_idealista():
         room_link = room_div.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
         room_link_cleaned = re.sub(r'\?.*', '', room_link)
         logging.info(room_link_cleaned)
-        check_and_add(room_link_cleaned, room_list)
+        check_and_add(room_link_cleaned, combined_list)
     driver.close()
     logging.info("Scraped Idealista")
 def scrape_badi():
@@ -52,7 +52,7 @@ def scrape_badi():
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
             room_link_cleaned = re.sub(r'\?.*', '', room_link)
             logging.info(room_link_cleaned)
-            check_and_add(room_link_cleaned, room_list)
+            check_and_add(room_link_cleaned, combined_list)
     driver.close()
     logging.info("Checked Badi")
 
