@@ -28,8 +28,9 @@ def scrape_badi():
     # driver = webdriver.Chrome(service=Service(os.environ.get("CHROMEDRIVER_PATH")), options=options)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 6)
     driver.get(badi_link)
+    time.sleep(5)
     badi_page = driver.current_url
 
     room_list = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
