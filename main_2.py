@@ -23,46 +23,45 @@ idealista_link = data['idealista_link']
 pb = Pushbullet(access_token)
 logging.basicConfig(level=logging.INFO)
 
-badi_list = []
+room_list = []
 
 
 def scrape_idealista():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     wait = WebDriverWait(driver, 6)
     driver.get(idealista_link)
+    time.sleep(5)
     idealista_page = driver.current_url
 
-    room_list = driver.find_elements("xpath", "//div[@class]")
-    regex_pattern = re.compile(r"^item item-multimedia-container")
-    matching_elements = []
+    room_list = driver.find_elements("xpath", ("//article[starts-with(@class, 'item item-multimedia-container')]"))
     for element in room_list:
-        if regex_pattern.search(element.get_attribute("id")):
-            room_link = element.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
-            matching_elements.append(room_link)
+        room_div = element.find_element(By.CLASS_NAME, 'item-info-container')
+        room_link = room_div.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+        room_link_cleaned = re.sub(r'\?.*', '', room_link)
+        logging.info(room_link_cleaned)
+        check_and_add(room_link_cleaned, room_list)
     driver.close()
     logging.info("Scraped Idealista")
-    print(matching_elements)
-    return matching_elements
 
 
 def scrape_badi():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     wait = WebDriverWait(driver, 6)
     driver.get(badi_link)
+    time.sleep(5)
     badi_page = driver.current_url
 
     room_list = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
-    # regex_pattern = re.compile(r"^list-room-card-*")
+    logging.info()
     for element in room_list:
-
-        # if regex_pattern.search(element.get_attribute("id")):
-            room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
-            room_link_cleaned = re.sub(r'\?.*', '', room_link)
-            logging.info(room_link_cleaned)
-            check_and_add(room_link_cleaned, badi_list)
+        room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
+        room_link_cleaned = re.sub(r'\?.*', '', room_link)
+        logging.info(room_link_cleaned)
+        check_and_add(room_link_cleaned, room_list)
 
     driver.close()
     logging.info("Checked Badi")
+
 
 def check_and_add(item, database):
     if item not in database:
@@ -72,29 +71,10 @@ def check_and_add(item, database):
         logging.info(f'New flat found at {time}: {item}')
 
 
-# def check_new_elements(prev_output, curr_output):
-#     # Count the number of occurrences of each element in the outputs
-#     prev_count = Counter(prev_output)
-#     curr_count = Counter(curr_output)
-#
-#     new_element_count = 0
-#
-#     # Compare the counts of the elements in the previous and current outputs
-#     # If there are any elements in the current output that were not present in the previous output, send an email notification
-#     for element in curr_count:
-#         if element not in prev_count:
-#             send_notification(element)
-#             new_element_count += 1
-#     if new_element_count == 0:
-#         time = datetime.now().strftime("%H:%M:%S")
-#         logging.info(f"No new flats found at {time}")
-#     else:
-#         logging.info("Notification sent")
-#         logging.info(curr_count)
-#         logging.info(prev_count)
-
 while True:
     scrape_badi()
-    # current_output = scrape_idealista()
-
-    time.sleep(10)
+    try:
+        scrape_idealista()
+    except:
+        pass
+    time.sleep(60)
