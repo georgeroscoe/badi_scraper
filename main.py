@@ -74,7 +74,7 @@ while True:
     scrape_badi()
     counter += 1
     try:
-        if counter % 5 == 1:
+        if counter % 5 == 0:
             scrape_idealista()
     except:
         pass
