@@ -33,6 +33,7 @@ def scrape_badi():
     badi_page = driver.current_url
 
     room_list = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
+    logging.info(room_list)
     for element in room_list:
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
             room_link_cleaned = re.sub(r'\?.*', '', room_link)
