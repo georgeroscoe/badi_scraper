@@ -14,7 +14,6 @@ import json
 options = webdriver.ChromeOptions()
 options.add_argument("disable-dev-shm-usage")
 
-
 data_file = open('data.json')
 data = json.load(data_file)
 access_token = data['token']
@@ -34,11 +33,10 @@ def scrape_badi():
     badi_page = driver.current_url
 
     room_list = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
-    logging.info(room_list)
     for element in room_list:
             room_link = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]').get_attribute('href')
             room_link_cleaned = re.sub(r'\?.*', '', room_link)
-            logging.info(room_link)
+            logging.info(room_link_cleaned)
             check_and_add(room_link_cleaned, badi_list)
     driver.close()
     logging.info("Checked Badi")
@@ -48,7 +46,7 @@ def check_and_add(item, database):
     if item not in database:
         database.append(item)
         time = datetime.now().strftime("%H:%M:%S")
-        # pb.push_link(f"New flat found at {time}", item)
+        pb.push_link(f"New flat found at {time}", item)
         logging.info(f'New flat found at {time}: {item}')
 
 
