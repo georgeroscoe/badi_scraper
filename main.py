@@ -22,7 +22,6 @@ pb = Pushbullet(access_token)
 logging.basicConfig(level=logging.INFO)
 badi_list = []
 
-
 def scrape_badi():
     # driver = webdriver.Chrome(service=Service(os.environ.get("CHROMEDRIVER_PATH")), options=options)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
