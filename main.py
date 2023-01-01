@@ -13,8 +13,7 @@ from datetime import datetime, timedelta
 import json
 
 options = webdriver.ChromeOptions()
-options.add_argument("start-maximized")
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
+options.add_argument("disable-dev-shm-usage")
 data_file = open('data.json')
 data = json.load(data_file)
 access_token = data['token']
