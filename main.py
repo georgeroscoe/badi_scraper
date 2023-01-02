@@ -30,39 +30,7 @@ pb = Pushbullet(access_token)
 options = webdriver.ChromeOptions()
 options.add_argument("disable-dev-shm-usage")
 
-# Create a global instance of the Chrome driver
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
-# Wait object for synchronizing tests
-wait = WebDriverWait(driver, 6)
-
 rooms = []
-
-
-def scrape_badi():
-    """
-    Scrape the Badi webpage for room listings.
-    """
-    driver.get(badi_link)
-    badi_page = driver.current_url
-    room_links = []
-    wait
-    logging.info("Reached listing page")
-
-    # Find all room listings on the page
-    room_list_elements = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
-    for element in room_list_elements:
-        room_link_element = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]')
-        room_link = room_link_element.get_attribute('href')
-        room_link_cleaned = re.sub(r'\?.*', '', room_link)
-        logging.info(room_link_cleaned)
-        room_links.append(room_link_cleaned)
-
-    for room_link in room_links:
-        check_if_recent(driver, room_link, rooms)
-
-    logging.info("Checked Badi")
-    driver.close()
 
 def send_notification(link):
     """
@@ -84,18 +52,46 @@ def check_if_recent(driver, link, database):
     Check if a room listing is recent and notify the user if it is.
     """
     driver.get(link)
+    wait = WebDriverWait(driver, 6)
     time_element = wait.until(
         lambda d: d.find_element("xpath", (
         "/html/body/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div/div/div[1]/div/section/div[2]/div/div/div/div[2]/div/div[4]/p/time"))
     )
     time_string = time_element.get_attribute('datetime')
-
+    logging.info(f"Checking {link}")
     if is_recent(time_string):
         if link not in database:
             database.append(link)
             send_notification(link)
+    else:
+        logging.info(f'Not recent')
+def scrape_badi():
+    """
+    Scrape the Badi webpage for room listings.
+    """
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    wait = WebDriverWait(driver, 6)
+    driver.get(badi_link)
+    wait
+    badi_page = driver.current_url
+    room_links = []
+    logging.info("Reached listing page")
 
+    # Find all room listings on the page
+    room_list_elements = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
+    for element in room_list_elements:
+        room_link_element = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]')
+        room_link = room_link_element.get_attribute('href')
+        room_link_cleaned = re.sub(r'\?.*', '', room_link)
+        logging.info(room_link_cleaned)
+        room_links.append(room_link_cleaned)
+
+    for room in room_links:
+        check_if_recent(driver, room, rooms)
+
+    driver.close()
+    logging.info("Checked Badi")
 
 while True:
     scrape_badi()
-    time.sleep(60)
+    time.sleep(10)
