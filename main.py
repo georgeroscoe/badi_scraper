@@ -72,13 +72,15 @@ def scrape_badi():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     wait = WebDriverWait(driver, 6)
     driver.get(badi_link)
-    wait
+    time.sleep(5)
     badi_page = driver.current_url
     room_links = []
     logging.info("Reached listing page")
 
     # Find all room listings on the page
     room_list_elements = driver.find_elements("xpath", ("//div[starts-with(@id, 'list-room-card')]"))
+    if len(room_list_elements) > 0:
+        logging.info("Found rooms")
     for element in room_list_elements:
         room_link_element = element.find_element(By.CSS_SELECTOR, 'a[data-qa="room-card-link"]')
         room_link = room_link_element.get_attribute('href')
@@ -94,4 +96,4 @@ def scrape_badi():
 
 while True:
     scrape_badi()
-    time.sleep(10)
+    time.sleep(60)
