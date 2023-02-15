@@ -1,4 +1,4 @@
-Bot that continually scrapes the flat listings page given a search area, and alerts as soon as a new flat is listed.
+Bot that continually scrapes the flat listings page on Badi given a search area, and alerts as soon as a new flat is listed.
 
 Alerts are sent via Pushbullet, which you'll need to generate a token for, and I hosted the bot on Heroku.
 
