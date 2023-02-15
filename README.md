@@ -3,3 +3,5 @@ Bot that continually scrapes the flat listings page on Badi given a search area,
 Alerts are sent via Pushbullet, which you'll need to generate a token for, and I hosted the bot on Heroku.
 
 To get the right search link, you need to change the query parameters to fit what you're looking for.
+
+Once you have a Pushbullet token and the right search link, put them in the test-data.json file, and rename it to data.json
